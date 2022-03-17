@@ -281,18 +281,14 @@ class ST7735(object):
         self.data(0x0E)
 
         if self._invert:
-            print("ST7735_INVON")
             self.command(ST7735_INVON)   # Invert display
         else:
-            print("ST7735_INVOFF")
             self.command(ST7735_INVOFF)  # Don't invert display
 
         self.command(ST7735_MADCTL)     # Memory access control (directions)
         if self._bgr:
-            print("MADCTL 0xC8")
             self.data(0xC8)             # row addr/col addr, bottom to top refresh; Set D3 RGB Bit to 1 for format BGR
         else:
-            print("MADCTL 0xC0")
             self.data(0xC0)             # row addr/col addr, bottom to top refresh; Set D3 RGB Bit to 0 for format RGB
 
         self.command(ST7735_COLMOD)     # set color mode
