@@ -119,7 +119,7 @@ class ST7735(object):
     """Representation of an ST7735 TFT LCD."""
 
     def __init__(self, port, cs, dc, backlight=None, rst=None, width=ST7735_TFTWIDTH,
-                 height=ST7735_TFTHEIGHT, rotation=90, offset_left=None, offset_top=None, invert=True, spi_speed_hz=4000000):
+                 height=ST7735_TFTHEIGHT, rotation=90, offset_left=None, offset_top=None, invert=True, bgr=True, spi_speed_hz=4000000):
         """Create an instance of the display using SPI communication.
 
         Must provide the GPIO pin number for the D/C pin and the SPI driver.
@@ -154,6 +154,7 @@ class ST7735(object):
         self._height = height
         self._rotation = rotation
         self._invert = invert
+        self._bgr = bgr
 
         # Default left offset to center display
         if offset_left is None:
@@ -280,12 +281,19 @@ class ST7735(object):
         self.data(0x0E)
 
         if self._invert:
+            print("ST7735_INVON")
             self.command(ST7735_INVON)   # Invert display
         else:
+            print("ST7735_INVOFF")
             self.command(ST7735_INVOFF)  # Don't invert display
 
         self.command(ST7735_MADCTL)     # Memory access control (directions)
-        self.data(0xC8)                 # row addr/col addr, bottom to top refresh
+        if self._bgr:
+            print("MADCTL 0xC8")
+            self.data(0xC8)             # row addr/col addr, bottom to top refresh; Set D3 RGB Bit to 1 for format BGR
+        else:
+            print("MADCTL 0xC0")
+            self.data(0xC0)             # row addr/col addr, bottom to top refresh; Set D3 RGB Bit to 0 for format RGB
 
         self.command(ST7735_COLMOD)     # set color mode
         self.data(0x05)                 # 16-bit color
