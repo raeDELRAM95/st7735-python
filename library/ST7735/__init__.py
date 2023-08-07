@@ -203,6 +203,18 @@ class ST7735(object):
         if self._backlight is not None:
             GPIO.output(self._backlight, value)
 
+    def display_off(self):
+        self.command(ST7735_DISPOFF)
+
+    def display_on(self):
+        self.command(ST7735_DISPON)
+
+    def sleep(self):
+        self.command(ST7735_SLPIN)
+
+    def wake(self):
+        self.command(ST7735_SLPOUT)
+
     @property
     def width(self):
         return self._width if self._rotation == 0 or self._rotation == 180 else self._height
@@ -341,7 +353,7 @@ class ST7735(object):
         self.command(ST7735_NORON)      # Normal display on
         time.sleep(0.10)                # 10 ms
 
-        self.command(ST7735_DISPON)     # Display on
+        self.display_on()
         time.sleep(0.100)               # 100 ms
 
     def begin(self):
