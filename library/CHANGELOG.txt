@@ -1,3 +1,9 @@
+0.0.5
+-----
+
+* Add support for choosing between BGR/RGB displays
+* Add methods for display power and sleep control
+
 0.0.4-post1
 -----------
 
