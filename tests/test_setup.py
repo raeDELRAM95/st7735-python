@@ -1,38 +1,31 @@
 import mock
 
 
-def test_setup(GPIO, spidev, numpy, st7735):
-    display = st7735.ST7735(port=0, cs=0, dc=24)
-    del display
+def test_setup(gpiodevice, gpiod, spidev, numpy, st7735):
+    _ = st7735.ST7735(port=0, cs=0, dc="GPIO24")
 
-    GPIO.output.assert_has_calls([
-        mock.call(24, True),
-        mock.call(24, False)
+    gpiodevice.get_pin.assert_has_calls([
+        mock.call("GPIO24", "st7735-dc", st7735.OUTL)
     ], any_order=True)
 
 
-def test_setup_no_invert(GPIO, spidev, numpy, st7735):
-    display = st7735.ST7735(port=0, cs=0, dc=24, invert=False)
-    del display
+def test_setup_no_invert(gpiodevice, gpiod, spidev, numpy, st7735):
+    _ = st7735.ST7735(port=0, cs=0, dc="GPIO24", invert=False)
 
 
-def test_setup_with_backlight(GPIO, spidev, numpy, st7735):
-    display = st7735.ST7735(port=0, cs=0, dc=24, backlight=4)
-    GPIO.setup.assert_called_with(4, GPIO.OUT)
+def test_setup_with_backlight(gpiodevice, gpiod, spidev, numpy, st7735):
+    display = st7735.ST7735(port=0, cs=0, dc="GPIO24", backlight="GPIO4")
 
-    display.set_backlight(GPIO.HIGH)
+    display.set_backlight(True)
 
-    GPIO.output.assert_has_calls([
-        mock.call(4, GPIO.LOW),
-        mock.call(4, GPIO.HIGH),
-        # Dozens of falls with True/False here
-        # due to _init() being called and the display
-        # setup setting the command/data pin
-        mock.call(4, GPIO.HIGH)
+    gpiodevice.get_pin.assert_has_calls([
+        mock.call("GPIO4", "st7735-bl", st7735.OUTL)
     ], any_order=True)
 
 
-def test_setup_with_reset(GPIO, spidev, numpy, st7735):
-    display = st7735.ST7735(port=0, cs=0, dc=24, rst=4)
-    GPIO.setup.assert_called_with(4, GPIO.OUT)
-    del display
+def test_setup_with_reset(gpiodevice, gpiod, spidev, numpy, st7735):
+    _ = st7735.ST7735(port=0, cs=0, dc=24, rst="GPIO4")
+
+    gpiodevice.get_pin.assert_has_calls([
+        mock.call("GPIO4", "st7735-rst", st7735.OUTL)
+    ], any_order=True)
