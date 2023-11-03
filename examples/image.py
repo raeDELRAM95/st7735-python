@@ -21,6 +21,7 @@
 import sys
 
 from PIL import Image
+
 import ST7735 as ST7735
 
 print("""

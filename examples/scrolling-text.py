@@ -1,10 +1,8 @@
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
 import time
 
-import ST7735
+from PIL import Image, ImageDraw, ImageFont
 
+import ST7735
 
 MESSAGE = "Hello World! How are you today?"
 

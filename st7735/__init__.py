@@ -20,11 +20,10 @@
 # THE SOFTWARE.
 import numbers
 import time
+
 import numpy as np
-
-import spidev
 import RPi.GPIO as GPIO
-
+import spidev
 
 __version__ = "0.0.5"
 

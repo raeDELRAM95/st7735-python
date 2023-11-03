@@ -18,12 +18,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-import time
 import math
 import sys
+import time
 
-from PIL import Image
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
+
 import ST7735 as ST7735
 
 SPI_SPEED_MHZ = 10  # Higher speed = higher framerate

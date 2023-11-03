@@ -18,10 +18,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-from PIL import Image
-import ST7735
-import time
 import sys
+import time
+
+from PIL import Image
+
+import ST7735
 
 print("""
 gif.py - Display a gif on the LCD.
