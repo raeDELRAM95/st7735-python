@@ -9,6 +9,13 @@ import pytest
 
 
 @pytest.fixture(scope='function', autouse=False)
+def st7735():
+    import st7735
+    yield st7735
+    del sys.modules['st7735']
+
+
+@pytest.fixture(scope='function', autouse=False)
 def GPIO():
     """Mock RPi.GPIO module."""
     GPIO = mock.MagicMock()

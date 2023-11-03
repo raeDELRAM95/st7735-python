@@ -1,11 +1,8 @@
 import mock
-from tools import force_reimport
 
 
-def test_setup(GPIO, spidev, numpy):
-    force_reimport('ST7735')
-    import ST7735
-    display = ST7735.ST7735(port=0, cs=0, dc=24)
+def test_setup(GPIO, spidev, numpy, st7735):
+    display = st7735.ST7735(port=0, cs=0, dc=24)
     del display
 
     GPIO.output.assert_has_calls([
@@ -14,17 +11,13 @@ def test_setup(GPIO, spidev, numpy):
     ], any_order=True)
 
 
-def test_setup_no_invert(GPIO, spidev, numpy):
-    force_reimport('ST7735')
-    import ST7735
-    display = ST7735.ST7735(port=0, cs=0, dc=24, invert=False)
+def test_setup_no_invert(GPIO, spidev, numpy, st7735):
+    display = st7735.ST7735(port=0, cs=0, dc=24, invert=False)
     del display
 
 
-def test_setup_with_backlight(GPIO, spidev, numpy):
-    force_reimport('ST7735')
-    import ST7735
-    display = ST7735.ST7735(port=0, cs=0, dc=24, backlight=4)
+def test_setup_with_backlight(GPIO, spidev, numpy, st7735):
+    display = st7735.ST7735(port=0, cs=0, dc=24, backlight=4)
     GPIO.setup.assert_called_with(4, GPIO.OUT)
 
     display.set_backlight(GPIO.HIGH)
@@ -39,9 +32,7 @@ def test_setup_with_backlight(GPIO, spidev, numpy):
     ], any_order=True)
 
 
-def test_setup_with_reset(GPIO, spidev, numpy):
-    force_reimport('ST7735')
-    import ST7735
-    display = ST7735.ST7735(port=0, cs=0, dc=24, rst=4)
+def test_setup_with_reset(GPIO, spidev, numpy, st7735):
+    display = st7735.ST7735(port=0, cs=0, dc=24, rst=4)
     GPIO.setup.assert_called_with(4, GPIO.OUT)
     del display
