@@ -20,13 +20,12 @@
 # THE SOFTWARE.
 import numbers
 import time
-import numpy as np
 
-import spidev
 import gpiod
 import gpiodevice
+import numpy as np
+import spidev
 from gpiod.line import Direction, Value
-
 
 __version__ = '0.0.5'
 
@@ -149,13 +148,14 @@ class ST7735(object):
         self._spi.lsbfirst = False
         self._spi.max_speed_hz = spi_speed_hz
 
-        self._dc = dc
-        self._rst = rst
         self._width = width
         self._height = height
         self._rotation = rotation
         self._invert = invert
         self._bgr = bgr
+
+        self._bl = None
+        self._rst = None
 
         # Default left offset to center display
         if offset_left is None:
@@ -172,22 +172,25 @@ class ST7735(object):
         gpiodevice.friendly_errors = True
 
         # Set DC as output.
-        self._dc_lines, self._dc_line = gpiodevice.get_pin(dc, "st7735-dc", OUTL)
+        self._dc = gpiodevice.get_pin(dc, "st7735-dc", OUTL)
 
         # Setup backlight as output (if provided).
-        self._backlight = backlight
         if backlight is not None:
-            self._bl_lines, self._bl_line = gpiodevice.get_pin(backlight, "st7735-bl", OUTL)
-            self._bl_lines.set_value(self._bl_line, Value.INACTIVE)
+            self._bl = gpiodevice.get_pin(backlight, "st7735-bl", OUTL)
+            self.set_pin(self._bl, False)
             time.sleep(0.1)
-            self._bl_lines.set_value(self._bl_line, Value.ACTIVE)
+            self.set_pin(self._bl, True)
 
         # Setup reset as output (if provided).
         if rst is not None:
-            self._rst_lines, self._rst_line = gpiodevice.get_pin(rst, "st7735-rst", OUTL)
+            self._rst = gpiodevice.get_pin(rst, "st7735-rst", OUTL)
 
         self.reset()
         self._init()
+
+    def set_pin(self, pin, state):
+        lines, offset = pin
+        lines.set_value(offset, Value.ACTIVE if state else Value.INACTIVE)
 
     def send(self, data, is_data=True, chunk_size=4096):
         """Write a byte or array of bytes to the display. Is_data parameter
@@ -196,7 +199,7 @@ class ST7735(object):
         single SPI transaction, with a default of 4096.
         """
         # Set DC low for command, high for data.
-        self._dc_lines.set_value(self._dc_line, Value.ACTIVE if is_data else Value.INACTIVE)
+        self.set_pin(self._dc, is_data)
         # Convert scalar argument to list so either can be passed as parameter.
         if isinstance(data, numbers.Number):
             data = [data & 0xFF]
@@ -204,8 +207,8 @@ class ST7735(object):
 
     def set_backlight(self, value):
         """Set the backlight on/off."""
-        if self._backlight is not None:
-            self._bl_lines.set_value(self._bl_line, Value.ACTIVE if value else Value.INACTIVE)
+        if self._bl is not None:
+            self.set_pin(self._bl, value)
 
     def display_off(self):
         self.command(ST7735_DISPOFF)
@@ -238,11 +241,11 @@ class ST7735(object):
     def reset(self):
         """Reset the display, if reset pin is connected."""
         if self._rst is not None:
-            self._rst_lines.set_value(self._rst_line, Value.ACTIVE)
+            self.set_pin(self._rst, True)
             time.sleep(0.500)
-            self._rst_lines.set_value(self._rst_line, Value.INACTIVE)
+            self.set_pin(self._rst, False)
             time.sleep(0.500)
-            self._rst_lines.set_value(self._rst_line, Value.ACTIVE)
+            self.set_pin(self._rst, True)
             time.sleep(0.500)
 
     def _init(self):
