@@ -20,13 +20,16 @@
 # THE SOFTWARE.
 import numbers
 import time
+
+import gpiod
+import gpiodevice
 import numpy as np
-
 import spidev
-import RPi.GPIO as GPIO
-
+from gpiod.line import Direction, Value
 
 __version__ = '0.0.5'
+
+OUTL = gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.INACTIVE)
 
 BG_SPI_CS_BACK = 0
 BG_SPI_CS_FRONT = 1
@@ -122,9 +125,9 @@ class ST7735(object):
                  height=ST7735_TFTHEIGHT, rotation=90, offset_left=None, offset_top=None, invert=True, bgr=True, spi_speed_hz=4000000):
         """Create an instance of the display using SPI communication.
 
-        Must provide the GPIO pin number for the D/C pin and the SPI driver.
+        Must provide the GPIO pin label for the D/C pin and the SPI driver.
 
-        Can optionally provide the GPIO pin number for the reset pin as the rst parameter.
+        Can optionally provide the GPIO pin label for the reset pin as the rst parameter.
 
         :param port: SPI port number
         :param cs: SPI chip-select number (0 or 1 for BCM
@@ -140,21 +143,19 @@ class ST7735(object):
 
         """
 
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-
         self._spi = spidev.SpiDev(port, cs)
         self._spi.mode = 0
         self._spi.lsbfirst = False
         self._spi.max_speed_hz = spi_speed_hz
 
-        self._dc = dc
-        self._rst = rst
         self._width = width
         self._height = height
         self._rotation = rotation
         self._invert = invert
         self._bgr = bgr
+
+        self._bl = None
+        self._rst = None
 
         # Default left offset to center display
         if offset_left is None:
@@ -168,23 +169,28 @@ class ST7735(object):
 
         self._offset_top = offset_top
 
+        gpiodevice.friendly_errors = True
+
         # Set DC as output.
-        GPIO.setup(dc, GPIO.OUT)
+        self._dc = gpiodevice.get_pin(dc, "st7735-dc", OUTL)
 
         # Setup backlight as output (if provided).
-        self._backlight = backlight
         if backlight is not None:
-            GPIO.setup(backlight, GPIO.OUT)
-            GPIO.output(backlight, GPIO.LOW)
+            self._bl = gpiodevice.get_pin(backlight, "st7735-bl", OUTL)
+            self.set_pin(self._bl, False)
             time.sleep(0.1)
-            GPIO.output(backlight, GPIO.HIGH)
+            self.set_pin(self._bl, True)
 
         # Setup reset as output (if provided).
         if rst is not None:
-            GPIO.setup(rst, GPIO.OUT)
+            self._rst = gpiodevice.get_pin(rst, "st7735-rst", OUTL)
 
         self.reset()
         self._init()
+
+    def set_pin(self, pin, state):
+        lines, offset = pin
+        lines.set_value(offset, Value.ACTIVE if state else Value.INACTIVE)
 
     def send(self, data, is_data=True, chunk_size=4096):
         """Write a byte or array of bytes to the display. Is_data parameter
@@ -193,7 +199,7 @@ class ST7735(object):
         single SPI transaction, with a default of 4096.
         """
         # Set DC low for command, high for data.
-        GPIO.output(self._dc, is_data)
+        self.set_pin(self._dc, is_data)
         # Convert scalar argument to list so either can be passed as parameter.
         if isinstance(data, numbers.Number):
             data = [data & 0xFF]
@@ -201,8 +207,8 @@ class ST7735(object):
 
     def set_backlight(self, value):
         """Set the backlight on/off."""
-        if self._backlight is not None:
-            GPIO.output(self._backlight, value)
+        if self._bl is not None:
+            self.set_pin(self._bl, value)
 
     def display_off(self):
         self.command(ST7735_DISPOFF)
@@ -235,11 +241,11 @@ class ST7735(object):
     def reset(self):
         """Reset the display, if reset pin is connected."""
         if self._rst is not None:
-            GPIO.output(self._rst, 1)
+            self.set_pin(self._rst, True)
             time.sleep(0.500)
-            GPIO.output(self._rst, 0)
+            self.set_pin(self._rst, False)
             time.sleep(0.500)
-            GPIO.output(self._rst, 1)
+            self.set_pin(self._rst, True)
             time.sleep(0.500)
 
     def _init(self):

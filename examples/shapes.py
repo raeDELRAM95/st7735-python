@@ -18,11 +18,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
-import ST7735
+import st7735
 
 print("""
 shapes.py - Display test shapes on the LCD using PIL.
@@ -33,11 +31,11 @@ breakout into the rear slot.
 """)
 
 # Create ST7735 LCD display class.
-disp = ST7735.ST7735(
+disp = st7735.ST7735(
     port=0,
-    cs=ST7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc=9,
-    backlight=19,               # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
+    dc="GPIO9",
+    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
     rotation=90,
     spi_speed_hz=4000000
 )

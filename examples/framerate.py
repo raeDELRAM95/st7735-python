@@ -18,15 +18,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-import time
 import math
 import sys
+import time
 
-from PIL import Image
-from PIL import ImageDraw
-import ST7735 as ST7735
+from PIL import Image, ImageDraw
 
-SPI_SPEED_MHZ = 10  # Higher speed = higher framerate
+import st7735
+
+SPI_SPEED_MHZ = 4  # Higher speed = higher framerate
 
 if len(sys.argv) > 1:
     SPI_SPEED_MHZ = int(sys.argv[1])
@@ -41,11 +41,11 @@ Running at: {}MHz
 """.format(SPI_SPEED_MHZ))
 
 # Create ST7735 LCD display class.
-disp = ST7735.ST7735(
+disp = st7735.ST7735(
     port=0,
-    cs=ST7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc=9,
-    backlight=19,               # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
+    dc="PIN21",
+    backlight="PIN35",          # 18 for back BG slot, 19 for front BG slot.
     rotation=90,
     spi_speed_hz=SPI_SPEED_MHZ * 1000000
 )

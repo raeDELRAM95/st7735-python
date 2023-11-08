@@ -18,10 +18,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-from PIL import Image
-import ST7735
-import time
 import sys
+import time
+
+from PIL import Image
+
+import st7735
 
 print("""
 gif.py - Display a gif on the LCD.
@@ -37,11 +39,11 @@ else:
     sys.exit(0)
 
 # Create TFT LCD display class.
-disp = ST7735.ST7735(
+disp = st7735.ST7735(
     port=0,
-    cs=ST7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc=9,
-    backlight=19,               # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
+    dc="GPIO9",
+    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
     spi_speed_hz=4000000
 )
 

@@ -1,19 +1,17 @@
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
 import time
 
-import ST7735
+from PIL import Image, ImageDraw, ImageFont
 
+import st7735
 
 MESSAGE = "Hello World! How are you today?"
 
 # Create ST7735 LCD display class.
-disp = ST7735.ST7735(
+disp = st7735.ST7735(
     port=0,
-    cs=ST7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc=9,
-    backlight=19,               # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
+    dc="GPIO9",
+    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
     rotation=90,
     spi_speed_hz=10000000
 )

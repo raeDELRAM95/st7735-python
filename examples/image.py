@@ -21,7 +21,8 @@
 import sys
 
 from PIL import Image
-import ST7735 as ST7735
+
+import st7735
 
 print("""
 image.py - Display an image on the LCD.
@@ -37,11 +38,11 @@ if len(sys.argv) < 2:
 image_file = sys.argv[1]
 
 # Create ST7735 LCD display class.
-disp = ST7735.ST7735(
+disp = st7735.ST7735(
     port=0,
-    cs=ST7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc=9,
-    backlight=19,               # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
+    dc="GPIO9",
+    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
     rotation=90,
     spi_speed_hz=4000000
 )
