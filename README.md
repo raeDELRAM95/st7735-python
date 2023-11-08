@@ -1,10 +1,9 @@
 # Python ST7735
 
-[![Build Status](https://travis-ci.com/pimoroni/st7735-python.svg?branch=master)](https://travis-ci.com/pimoroni/st7735-python)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/pimoroni/st7735-python/test.yml?branch=main)](https://github.com/pimoroni/st7735-python/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/pimoroni/st7735-python/badge.svg?branch=master)](https://coveralls.io/github/pimoroni/st7735-python?branch=master)
 [![PyPi Package](https://img.shields.io/pypi/v/st7735.svg)](https://pypi.python.org/pypi/st7735)
 [![Python Versions](https://img.shields.io/pypi/pyversions/st7735.svg)](https://pypi.python.org/pypi/st7735)
-
 
 Python library to control an ST7735 TFT LCD display. Allows simple drawing on the display without installing a kernel module.
 
@@ -12,38 +11,11 @@ Designed specifically to work with a ST7735 based 160x80 pixel TFT SPI display. 
 
 ## Installing
 
-### Python 2
-
-Make sure you have the following dependencies:
-
 ````
-sudo apt update
-sudo apt install python-rpi.gpio python-spidev python-pip python-pil python-numpy
-````
-
-Install this library by running:
-
-````
-sudo pip install st7735
-````
-
-### Python 3
-
-Make sure you have the following dependencies:
-
-````
-sudo apt update
-sudo apt install python3-rpi.gpio python3-spidev python3-pip python3-pil python3-numpy
-````
-
-Install this library by running:
-
-````
-sudo python3 -m pip install st7735
+pip install st7735
 ````
 
 See example of usage in the examples folder.
-
 
 # Licensing & History
 
