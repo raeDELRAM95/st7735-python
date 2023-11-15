@@ -9,11 +9,11 @@ MESSAGE = "Hello World! How are you today?"
 # Create ST7735 LCD display class.
 disp = st7735.ST7735(
     port=0,
-    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc="GPIO9",
-    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
+    dc="PIN21",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
+    backlight="PIN32",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
     rotation=90,
-    spi_speed_hz=10000000
+    spi_speed_hz=4000000
 )
 
 # Initialize display.
@@ -29,7 +29,9 @@ draw = ImageDraw.Draw(img)
 
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 30)
 
-size_x, size_y = draw.textsize(MESSAGE, font)
+x1, y1, x2, y2 = font.getbbox(MESSAGE)
+size_x = x2 - x1
+size_y = y2 - y1
 
 text_x = 160
 text_y = (80 - size_y) // 2

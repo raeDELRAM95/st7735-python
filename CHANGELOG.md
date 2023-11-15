@@ -1,3 +1,9 @@
+1.0.0
+-----
+
+* Rename module from ST7735 to st7735
+* Port to gpiod/gpiodevice
+
 0.0.5
 -----
 

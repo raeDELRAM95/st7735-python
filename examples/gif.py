@@ -35,15 +35,16 @@ breakout into the front slot.
 if len(sys.argv) > 1:
     image_file = sys.argv[1]
 else:
-    print("Usage: {} <filename.gif>".format(sys.argv[0]))
+    print(f"Usage: {sys.argv[0]} <filename.gif>")
     sys.exit(0)
 
 # Create TFT LCD display class.
 disp = st7735.ST7735(
     port=0,
-    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc="GPIO9",
-    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
+    dc="PIN21",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
+    backlight="PIN32",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
+    rotation=90,
     spi_speed_hz=4000000
 )
 
@@ -54,10 +55,10 @@ width = disp.width
 height = disp.height
 
 # Load an image.
-print('Loading gif: {}...'.format(image_file))
+print(f"Loading gif: {image_file}...")
 image = Image.open(image_file)
 
-print('Drawing gif, press Ctrl+C to exit!')
+print("Drawing gif, press Ctrl+C to exit!")
 
 frame = 0
 

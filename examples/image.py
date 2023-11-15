@@ -32,7 +32,7 @@ breakout into the rear slot.
 """)
 
 if len(sys.argv) < 2:
-    print("Usage: {} <image_file>".format(sys.argv[0]))
+    print(f"Usage: {sys.argv[0]} <image_file>")
     sys.exit(1)
 
 image_file = sys.argv[1]
@@ -40,9 +40,9 @@ image_file = sys.argv[1]
 # Create ST7735 LCD display class.
 disp = st7735.ST7735(
     port=0,
-    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc="GPIO9",
-    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
+    dc="PIN21",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
+    backlight="PIN32",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
     rotation=90,
     spi_speed_hz=4000000
 )
@@ -54,13 +54,13 @@ HEIGHT = disp.height
 disp.begin()
 
 # Load an image.
-print('Loading image: {}...'.format(image_file))
+print(f"Loading image: {image_file}...")
 image = Image.open(image_file)
 
 # Resize the image
 image = image.resize((WIDTH, HEIGHT))
 
 # Draw the image on the display hardware.
-print('Drawing image')
+print("Drawing image")
 
 disp.display(image)
