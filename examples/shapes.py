@@ -25,7 +25,7 @@ import st7735
 print("""
 shapes.py - Display test shapes on the LCD using PIL.
 
-If you're using Breakout Garden, plug the 0.96" LCD (SPI)
+If you"re using Breakout Garden, plug the 0.96" LCD (SPI)
 breakout into the rear slot.
 
 """)
@@ -33,9 +33,9 @@ breakout into the rear slot.
 # Create ST7735 LCD display class.
 disp = st7735.ST7735(
     port=0,
-    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc="GPIO9",
-    backlight="GPIO19",         # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
+    dc="PIN21",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
+    backlight="PIN32",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
     rotation=90,
     spi_speed_hz=4000000
 )
@@ -50,7 +50,7 @@ HEIGHT = disp.height
 # Clear the display to a red background.
 # Can pass any tuple of red, green, blue values (from 0 to 255 each).
 # Get a PIL Draw object to start drawing on the display buffer.
-img = Image.new('RGB', (WIDTH, HEIGHT), color=(255, 0, 0))
+img = Image.new("RGB", (WIDTH, HEIGHT), color=(255, 0, 0))
 
 draw = ImageDraw.Draw(img)
 
@@ -73,18 +73,19 @@ font = ImageFont.load_default()
 
 # Alternatively load a TTF font.
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-# font = ImageFont.truetype('Minecraftia.ttf', 16)
+# font = ImageFont.truetype("Minecraftia.ttf", 16)
 
 
-# Define a function to create rotated text.  Unfortunately PIL doesn't have good
+# Define a function to create rotated text.  Unfortunately PIL doesn"t have good
 # native support for rotated fonts, but this function can be used to make a
-# text image and rotate it so it's easy to paste in the buffer.
+# text image and rotate it so it"s easy to paste in the buffer.
 def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
     # Get rendered font width and height.
-    draw = ImageDraw.Draw(image)
-    width, height = draw.textsize(text, font=font)
+    x1, y1, x2, y2 = font.getbbox(text)
+    width = x2 - x1
+    height = y2 - y1
     # Create a new image with transparent background to store the text.
-    textimage = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    textimage = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     # Render the text.
     textdraw = ImageDraw.Draw(textimage)
     textdraw.text((0, 0), text, font=font, fill=fill)
@@ -95,8 +96,8 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
 
 
 # Write two lines of white text on the buffer, rotated 90 degrees counter clockwise.
-draw_rotated_text(img, 'Hello World!', (0, 0), 90, font, fill=(255, 255, 255))
-draw_rotated_text(img, 'This is a line of text.', (10, HEIGHT - 10), 0, font, fill=(255, 255, 255))
+draw_rotated_text(img, "Hello World!", (0, 0), 90, font, fill=(255, 255, 255))
+draw_rotated_text(img, "This is a line of text.", (10, HEIGHT - 10), 0, font, fill=(255, 255, 255))
 
 # Write buffer to display hardware, must be called to make things visible on the
 # display!

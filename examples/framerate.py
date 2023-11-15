@@ -31,23 +31,23 @@ SPI_SPEED_MHZ = 4  # Higher speed = higher framerate
 if len(sys.argv) > 1:
     SPI_SPEED_MHZ = int(sys.argv[1])
 
-print("""
+print(f"""
 framerate.py - Test LCD framerate.
 
 If you're using Breakout Garden, plug the 0.96" LCD (SPI)
 breakout into the rear slot.
 
-Running at: {}MHz
-""".format(SPI_SPEED_MHZ))
+Running at: {SPI_SPEED_MHZ}MHz
+""")
 
 # Create ST7735 LCD display class.
 disp = st7735.ST7735(
     port=0,
-    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CSB_BACK or BG_SPI_CS_FRONT
-    dc="PIN21",
-    backlight="PIN35",          # 18 for back BG slot, 19 for front BG slot.
+    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
+    dc="PIN21",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
+    backlight="PIN32",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
     rotation=90,
-    spi_speed_hz=SPI_SPEED_MHZ * 1000000
+    spi_speed_hz=4000000
 )
 
 WIDTH = disp.width
@@ -78,7 +78,4 @@ while True:
     count += 1
     time_current = time.time() - time_start
     if count % 120 == 0:
-        print("Time: {:8.3f},      Frames: {:6d},      FPS: {:8.3f}".format(
-            time_current,
-            count,
-            count / time_current))
+        print(f"Time: {time_current:8.3f},      Frames: {count:6d},      FPS: {count / time_current:8.3f}")
