@@ -41,11 +41,13 @@ else:
 # Create TFT LCD display class.
 disp = st7735.ST7735(
     port=0,
-    cs=st7735.BG_SPI_CS_FRONT,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
-    dc="PIN21",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
-    backlight="PIN32",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
-    rotation=90,
-    spi_speed_hz=4000000
+    cs=st7735.BG_SPI_CS_BACK,  # BG_SPI_CS_BACK or BG_SPI_CS_FRONT. BG_SPI_CS_FRONT (eg: CE1) for Enviro Plus
+    dc="GPIO24",                 # "GPIO9" / "PIN21". "PIN21" for a Pi 5 with Enviro Plus
+#    backlight="GPIO22",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
+    rst="GPIO25"
+    rotation=0,
+    invert=True,
+    spi_speed_hz=16000000
 )
 
 # Initialize display.
