@@ -46,7 +46,7 @@ disp = st7735.ST7735(
 #    backlight="GPIO22",          # "PIN18" for back BG slot, "PIN19" for front BG slot. "PIN32" for a Pi 5 with Enviro Plus
     rst="GPIO25",
     rotation=0,
-    invert=True,
+    invert=False,
     spi_speed_hz=16000000
 )
 
